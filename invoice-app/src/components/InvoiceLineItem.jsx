@@ -4,20 +4,19 @@ import ListItem from '@mui/material/ListItem';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-const InvoiceLineItem = ({ item, onChange }) => {
-  const [description, setDescription] = useState(item.description);
-  const [hours, setHours] = useState(item.hours);
-  const [rate, setRate] = useState(item.rate);
+const InvoiceLineItem = ({ item, onUpdate }) => {
+  const [lineItem, updateLineItem] = useState(item);
 
-  const handleUpdate = (field, value) => {
-    if (field === 'description') setDescription(value);
-    if (field === 'hours') setHours(value);
-    if (field === 'rate') setRate(value);
+  const handleChange = (field, value) => {
+    const updatedItem = {
+      ...lineItem,
+      [field]: value,
+    }
 
-    onChange({
-      ...item,
-      [field]: value
-    });
+    console.log(updatedItem);
+
+    updateLineItem(updatedItem);
+    onUpdate(updatedItem);
   }
 
   return (
@@ -32,20 +31,22 @@ const InvoiceLineItem = ({ item, onChange }) => {
         <TextField
           size="small"
           label="Description"
-          value={description}
-          onChange={(event) => handleUpdate('description', event.target.value)}
+          value={lineItem.description}
+          onChange={(event) => handleChange('description', event.target.value)}
         />
         <TextField
           size="small"
           label="Hours"
-          value={hours}
-          onChange={(event) => handleUpdate('hours', event.target.value)}
+          type="number"
+          value={lineItem.hours}
+          onChange={(event) => handleChange('hours', event.target.value)}
         />
         <TextField
           size="small"
           label="Rate"
-          value={rate}
-          onChange={(event) => handleUpdate('rate', event.target.value)}
+          type="number"
+          value={lineItem.rate}
+          onChange={(event) => handleChange('rate', event.target.value)}
         />
       </Box>
     </ListItem>
@@ -59,7 +60,7 @@ InvoiceLineItem.propTypes = {
     hours: PropTypes.string,
     rate: PropTypes.string,
   }).isRequired,
-  onChange: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 }
 
 export default InvoiceLineItem;

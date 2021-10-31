@@ -30,14 +30,18 @@ const InvoiceDetails = observer(({ match }) => {
   }
 
   const handleUpdateInvoice = (field, value) => {
-    setInvoice({
+    const updatedInvoice = {
       ...invoice,
       [field]: value,
-    });
+    }
+    setInvoice(updatedInvoice);
+    updateStore(updatedInvoice);
   }
 
   const handleUpdateLineItem = (updatedItem) => {
-    setInvoice({
+    console.log(updatedItem);
+
+    const updatedInvoice = {
       ...invoice,
       lineItems: invoice.lineItems.map((item) => {
         if (item.id === updatedItem.id) {
@@ -46,11 +50,16 @@ const InvoiceDetails = observer(({ match }) => {
 
         return item;
       }),
-    });
+    }
+
+    console.log(updatedInvoice);
+
+    setInvoice(updatedInvoice);
+    updateStore(updatedInvoice);
   }
 
   const addLineItem = () => {
-    setInvoice({
+    const updatedInvoice = {
       ...invoice,
       lineItems: [
         ...invoice.lineItems,
@@ -61,12 +70,13 @@ const InvoiceDetails = observer(({ match }) => {
           rate: '',
         }
       ],
-    });
+    };
 
-    updateStore();
+    setInvoice(updatedInvoice);
+    updateStore(updatedInvoice);
   }
 
-  const updateStore = () => invoiceStore.updateInvoice(invoiceId, invoice);
+  const updateStore = (updatedInvoice) => invoiceStore.updateInvoice(invoiceId, updatedInvoice);
 
   return (
     <React.Fragment>
@@ -86,7 +96,6 @@ const InvoiceDetails = observer(({ match }) => {
           select
           value={customerId}
           onChange={handleCustomerChange}
-          onBlur={updateStore}
           SelectProps={{
             native: true,
           }}
@@ -101,7 +110,6 @@ const InvoiceDetails = observer(({ match }) => {
           style={{ marginTop: '1rem' }}
           value={invoice.number}
           onChange={(event) => handleUpdateInvoice('number', event.target.value)}
-          onBlur={updateStore}
         />
 
         <TextField
@@ -110,7 +118,6 @@ const InvoiceDetails = observer(({ match }) => {
           style={{ marginTop: '1rem' }}
           value={invoice.description}
           onChange={(event) => handleUpdateInvoice('description', event.target.value)}
-          onBlur={updateStore}
         />
 
         <TextField
@@ -118,7 +125,6 @@ const InvoiceDetails = observer(({ match }) => {
           select
           value={invoice.status}
           onChange={(event) => handleUpdateInvoice('status', event.target.value)}
-          onBlur={updateStore}
           SelectProps={{
             native: true,
           }}
@@ -138,7 +144,7 @@ const InvoiceDetails = observer(({ match }) => {
           }}
         >
           {invoice.lineItems.map(item => (
-            <InvoiceLineItem key={item.id} item={item} onChange={handleUpdateLineItem} />
+            <InvoiceLineItem key={item.id} item={item} onUpdate={handleUpdateLineItem} />
           ))}
         </List>
       </Box>

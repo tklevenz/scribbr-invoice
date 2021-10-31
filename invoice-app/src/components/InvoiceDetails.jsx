@@ -2,6 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { observer, MobXProviderContext } from 'mobx-react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import List from '@mui/material/List';
+import InvoiceLineItem from './InvoiceLineItem';
+import { v4 as uuid } from 'uuid';
 
 const InvoiceDetails = observer(({ match }) => {
   const { invoiceStore, customerStore } = useContext(MobXProviderContext);
@@ -29,9 +34,39 @@ const InvoiceDetails = observer(({ match }) => {
       ...invoice,
       [field]: value,
     });
-
-    invoiceStore.updateInvoice(invoiceId, invoice);
   }
+
+  const handleUpdateLineItem = (updatedItem) => {
+    setInvoice({
+      ...invoice,
+      lineItems: invoice.lineItems.map((item) => {
+        if (item.id === updatedItem.id) {
+          return updatedItem;
+        }
+
+        return item;
+      }),
+    });
+  }
+
+  const addLineItem = () => {
+    setInvoice({
+      ...invoice,
+      lineItems: [
+        ...invoice.lineItems,
+        {
+          id: uuid(),
+          description: '',
+          hours: '',
+          rate: '',
+        }
+      ],
+    });
+
+    updateStore();
+  }
+
+  const updateStore = () => invoiceStore.updateInvoice(invoiceId, invoice);
 
   return (
     <React.Fragment>
@@ -40,7 +75,6 @@ const InvoiceDetails = observer(({ match }) => {
         sx={{
           '& > :not(style)': { m: 1, width: '95%' },
         }}
-        autoComplete="off"
         mt={2}
       >
         <TextField size="small" disabled label="Customer Name" value={customerStore.customers.get(customerId).name}></TextField>
@@ -52,6 +86,7 @@ const InvoiceDetails = observer(({ match }) => {
           select
           value={customerId}
           onChange={handleCustomerChange}
+          onBlur={updateStore}
           SelectProps={{
             native: true,
           }}
@@ -66,6 +101,7 @@ const InvoiceDetails = observer(({ match }) => {
           style={{ marginTop: '1rem' }}
           value={invoice.number}
           onChange={(event) => handleUpdateInvoice('number', event.target.value)}
+          onBlur={updateStore}
         />
 
         <TextField
@@ -74,8 +110,52 @@ const InvoiceDetails = observer(({ match }) => {
           style={{ marginTop: '1rem' }}
           value={invoice.description}
           onChange={(event) => handleUpdateInvoice('description', event.target.value)}
+          onBlur={updateStore}
         />
+
+        <TextField
+          label="Select Customer"
+          select
+          value={invoice.status}
+          onChange={(event) => handleUpdateInvoice('status', event.target.value)}
+          onBlur={updateStore}
+          SelectProps={{
+            native: true,
+          }}
+        >
+          <option value="open">open</option>
+          <option value="sent">sent</option>
+          <option value="paid">paid</option>
+          <option value="late">late</option>
+        </TextField>
+
+        <List
+          dense
+          disablePadding
+          style={{
+            border: '1px solid rgba(0, 0, 0, 0.38)',
+            borderRadius: '3px',
+          }}
+        >
+          {invoice.lineItems.map(item => (
+            <InvoiceLineItem key={item.id} item={item} onChange={handleUpdateLineItem} />
+          ))}
+        </List>
       </Box>
+
+      <Fab
+        variant="extended"
+        color="primary"
+        style={{
+          position: 'absolute',
+          bottom: '1rem',
+          right: '1rem',
+        }}
+        onClick={addLineItem}
+      >
+        <AddIcon sx={{ mr: 1 }} />
+        New line item
+      </Fab>
     </React.Fragment>
   )
 });

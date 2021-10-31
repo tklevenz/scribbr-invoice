@@ -30,6 +30,7 @@ class InvoiceStore {
 
   updateInvoice = (id, updatedInvoice) => {
     this.invoices.set(id, updatedInvoice);
+    console.log(this.invoices.get(id))
   }
 
   getInvoiceTotal = (id) => {
@@ -53,7 +54,12 @@ class InvoiceStore {
       customerId: '1',
       number: invoiceNumber,
       status: 'open',
-      lineItems: [],
+      lineItems: [{
+        id: uuid(),
+        description: '',
+        hours: '',
+        rate: '',
+      }],
     });
 
     callback(id);

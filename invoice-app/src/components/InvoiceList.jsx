@@ -21,11 +21,6 @@ const InvoiceList = observer(() => {
       <List
         dense
         disablePadding
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
       >
         { invoiceStore.invoices.size && [...invoiceStore.invoices.values()].map(invoice => (
           <ListItem

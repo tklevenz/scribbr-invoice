@@ -15,21 +15,25 @@ function App() {
             Invoices
           </p>
         </header>
-        <Router history={createBrowserHistory({})}>
-          <Provider
-            invoiceStore={invoiceStore}
-          >
-            <Route
-              path="/"
-              exact
-              component={InvoiceList}
-            />
-            <Route
-              path="/invoices/:id"
-              exact
-            />
-          </Provider>
-        </Router>
+        <div className="App-content">
+          <div className="App-inner-content">
+            <Router history={createBrowserHistory({})}>
+              <Provider
+                invoiceStore={invoiceStore}
+              >
+                <Route
+                  path="/"
+                  exact
+                  component={InvoiceList}
+                />
+                <Route
+                  path="/invoices/:id"
+                  exact
+                />
+              </Provider>
+            </Router>
+          </div>
+        </div>
       </div>
 
     </React.Fragment>

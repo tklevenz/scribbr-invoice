@@ -1,6 +1,8 @@
-import logo from './logo.svg';
 import { Router, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import { Provider } from 'mobx-react';
+import InvoiceList from './components/InvoiceList.jsx';
+import invoiceStore from './stores/invoice';
 import './App.css';
 import React from 'react';
 
@@ -9,30 +11,27 @@ function App() {
     <React.Fragment>
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+            Invoices
           </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
         </header>
+        <Router history={createBrowserHistory({})}>
+          <Provider
+            invoiceStore={invoiceStore}
+          >
+            <Route
+              path="/"
+              exact
+              component={InvoiceList}
+            />
+            <Route
+              path="/invoices/:id"
+              exact
+            />
+          </Provider>
+        </Router>
       </div>
-      <Router history={createBrowserHistory({})}>
-        <Route
-          path="/invoices"
-          exact
-        />
-        <Route
-          path="/invoices/:id"
-          exact
-        />
-      </Router>
+
     </React.Fragment>
   );
 }

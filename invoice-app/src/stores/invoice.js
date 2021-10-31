@@ -5,7 +5,6 @@ class InvoiceStore {
   invoices;
 
   constructor() {
-    console.log('construct this');
     this.invoices = new Map();
 
     makeAutoObservable(this)
@@ -30,7 +29,6 @@ class InvoiceStore {
 
   updateInvoice = (id, updatedInvoice) => {
     this.invoices.set(id, updatedInvoice);
-    console.log(this.invoices.get(id))
   }
 
   getInvoiceTotal = (id) => {

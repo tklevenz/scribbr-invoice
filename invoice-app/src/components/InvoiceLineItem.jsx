@@ -13,8 +13,6 @@ const InvoiceLineItem = ({ item, onUpdate }) => {
       [field]: value,
     }
 
-    console.log(updatedItem);
-
     updateLineItem(updatedItem);
     onUpdate(updatedItem);
   }

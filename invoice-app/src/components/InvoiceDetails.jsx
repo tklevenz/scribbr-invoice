@@ -39,8 +39,6 @@ const InvoiceDetails = observer(({ match }) => {
   }
 
   const handleUpdateLineItem = (updatedItem) => {
-    console.log(updatedItem);
-
     const updatedInvoice = {
       ...invoice,
       lineItems: invoice.lineItems.map((item) => {
@@ -51,8 +49,6 @@ const InvoiceDetails = observer(({ match }) => {
         return item;
       }),
     }
-
-    console.log(updatedInvoice);
 
     setInvoice(updatedInvoice);
     updateStore(updatedInvoice);

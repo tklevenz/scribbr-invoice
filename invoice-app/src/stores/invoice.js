@@ -5,24 +5,58 @@ class InvoiceStore {
   invoices;
 
   constructor() {
+    console.log('construct this');
     this.invoices = new Map();
+
     makeAutoObservable(this)
   }
 
   loadInvoices = () => {
-    console.log('load invoices')
-    // TODO: replace with service call
-    let i;
-    for (i = 1; i < 5; i += 1) {
-      const id = uuid()
-      this.invoices.set(id, {
-        id,
-        description: `Invoice ${i}`,
-        total: 10,
-      });
+    // TODO: service call to load invoices
+  }
+
+  loadInvoice = (id) => {
+    // TODO: service call to load single invoice
+  }
+
+  // could probably be more efficient, get from an API call instead
+  getNewInvoiceNumber = () => {
+    if (this.invoices.size) {
+      return [...this.invoices.values()].map(invoice => invoice.number).reduce((a, b) => (Math.max(a, b))) + 1;
     }
 
-    console.log(this.invoices.size);
+    return 1;
+  }
+
+  updateInvoice = (id, updatedInvoice) => {
+    this.invoices.set(id, updatedInvoice);
+  }
+
+  getInvoiceTotal = (id) => {
+    const { lineItems } = this.invoices.get(id);
+
+    if (lineItems && lineItems.length) {
+      return lineItems.reduce((acc, cur) => acc + cur.hours * cur.rate, 0)
+    }
+
+    return 0;
+  }
+
+  addNewInvoice = (callback) => {
+    const id = uuid();
+
+    const invoiceNumber = this.getNewInvoiceNumber()
+
+    this.invoices.set(id, {
+      id,
+      description: `Invoice ${invoiceNumber}`,
+      customerId: '1',
+      number: invoiceNumber,
+      status: 'open',
+      lineItems: [],
+    });
+
+    callback(id);
   }
 }
 

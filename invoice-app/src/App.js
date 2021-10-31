@@ -1,8 +1,9 @@
-import { Router, Route } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import InvoiceList from './components/InvoiceList.jsx';
+import InvoiceDetails from './components/InvoiceDetails.jsx';
 import invoiceStore from './stores/invoice';
+import customerStore from './stores/customer';
 import './App.css';
 import React from 'react';
 
@@ -17,9 +18,10 @@ function App() {
         </header>
         <div className="App-content">
           <div className="App-inner-content">
-            <Router history={createBrowserHistory({})}>
+            <Router>
               <Provider
                 invoiceStore={invoiceStore}
+                customerStore={customerStore}
               >
                 <Route
                   path="/"
@@ -27,8 +29,9 @@ function App() {
                   component={InvoiceList}
                 />
                 <Route
-                  path="/invoices/:id"
+                  path="/:id"
                   exact
+                  component={InvoiceDetails}
                 />
               </Provider>
             </Router>

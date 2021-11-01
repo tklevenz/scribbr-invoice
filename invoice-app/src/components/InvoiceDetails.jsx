@@ -7,6 +7,8 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import List from '@mui/material/List';
 import InvoiceLineItem from './InvoiceLineItem';
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
 import { v4 as uuid } from 'uuid';
 
 const InvoiceDetails = observer(({ match }) => {
@@ -16,6 +18,8 @@ const InvoiceDetails = observer(({ match }) => {
   const [invoice, setInvoice] = useState(invoiceStore.invoices.get(invoiceId));
 
   const [customerId, setCustomerId] = useState(invoice.customerId);
+
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     if (!invoiceId) return;
@@ -151,6 +155,39 @@ const InvoiceDetails = observer(({ match }) => {
           {invoice.lineItems.map(item => (
             <InvoiceLineItem key={item.id} item={item} onUpdate={handleUpdateLineItem} />
           ))}
+        </List>
+
+        <List
+          dense
+          disablePadding
+          style={{
+            border: '1px solid rgba(0, 0, 0, 0.38)',
+            borderRadius: '3px',
+          }}
+        >
+          <Box
+            component="div"
+            sx={{
+              '& > :not(style)': { m: 1, width: '30%' },
+            }}
+            mt={2}
+          >
+            <TextField
+              size="small"
+              label="Email invoice to"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+
+            <Button
+              variant="contained"
+              endIcon={<SendIcon />}
+              onClick={() => invoiceStore.emailInvoice(invoiceId, email)}
+            >
+              Send
+            </Button>
+          </Box>
         </List>
       </Box>
 

@@ -22,7 +22,8 @@ class InvoiceStore {
       });
   }
 
-  saveInvoice = (id) => {
+  saveInvoice = (id, callback) => {
+    console.log('save invoice');
     const invoice = this.invoices.get(id);
 
     fetch('/invoice', {
@@ -32,8 +33,18 @@ class InvoiceStore {
       },
       body: JSON.stringify(toJS(invoice)),
     })
-      .then(res => console.log('post ok'))
-      .catch(error => console.log('error posting invoice', error));
+      .then(res => {
+        console.log('post ok');
+        if (callback) {
+          callback();
+        }
+      })
+      .catch(error => {
+        console.log('error posting invoice', error);
+        if (callback) {
+          callback(error);
+        }
+      });
   }
 
   // could probably be more efficient, get from an API call instead
@@ -79,6 +90,22 @@ class InvoiceStore {
     });
 
     callback(id);
+  }
+
+  emailInvoice = (id, email) => {
+    this.saveInvoice(id, (error) => {
+      if (!error) {
+        fetch(`/email_invoice/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email })
+        })
+          .then(res => console.log('email ok'))
+          .catch(error => console.log('error posting email'));
+      }
+    });
   }
 }
 

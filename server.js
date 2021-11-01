@@ -29,6 +29,25 @@ app.post('/invoice', (req, res) => {
   res.sendStatus(204);
 });
 
+app.post('/email_invoice/:id', (req, res) => {
+  const id = req.params.id;
+  const invoice = invoices.get(id);
+  const { email } = req.body;
+
+  if (!invoice) {
+    return res.status(400).send(`Invoice with id: ${id} not found`);
+  }
+
+  if (!email) {
+    return res.status(400).send('No email provided');
+  }
+
+  console.log(email, invoice);
+
+  // format invoice and send using mailgun or nodemailer
+  res.sendStatus(204);
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });

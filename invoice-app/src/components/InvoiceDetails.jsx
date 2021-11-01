@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
 import List from '@mui/material/List';
 import InvoiceLineItem from './InvoiceLineItem';
 import { v4 as uuid } from 'uuid';
@@ -11,10 +12,6 @@ import { v4 as uuid } from 'uuid';
 const InvoiceDetails = observer(({ match }) => {
   const { invoiceStore, customerStore } = useContext(MobXProviderContext);
   const invoiceId = match.params.id;
-
-  useEffect(() => {
-    invoiceStore.loadInvoice(invoiceId);
-  }, [invoiceStore, invoiceId])
 
   const [invoice, setInvoice] = useState(invoiceStore.invoices.get(invoiceId));
 
@@ -76,6 +73,18 @@ const InvoiceDetails = observer(({ match }) => {
 
   return (
     <React.Fragment>
+      <Fab
+        color="primary"
+        size="small"
+        style={{
+          position: 'absolute',
+          marginTop: '-1.25rem',
+          right: '1rem',
+        }}
+        onClick={() => invoiceStore.saveInvoice(invoiceId)}
+      >
+        <SaveIcon />
+      </Fab>
       <Box
         component="div"
         sx={{

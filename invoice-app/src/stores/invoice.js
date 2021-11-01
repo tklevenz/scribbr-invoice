@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, toJS } from 'mobx';
 import { v4 as uuid } from 'uuid';
 
 class InvoiceStore {
@@ -11,11 +11,29 @@ class InvoiceStore {
   }
 
   loadInvoices = () => {
-    // TODO: service call to load invoices
+    fetch('/invoices')
+      .then(res => res.json())
+      .then(invoices => {
+        if (invoices && invoices.length) {
+          for (const invoice of invoices) {
+            this.invoices.set(invoice.id, invoice);
+          }
+        }
+      });
   }
 
-  loadInvoice = (id) => {
-    // TODO: service call to load single invoice
+  saveInvoice = (id) => {
+    const invoice = this.invoices.get(id);
+
+    fetch('/invoice', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(toJS(invoice)),
+    })
+      .then(res => console.log('post ok'))
+      .catch(error => console.log('error posting invoice', error));
   }
 
   // could probably be more efficient, get from an API call instead

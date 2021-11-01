@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || 8080;
@@ -8,6 +9,8 @@ const invoices = new Map();
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use(express.static(path.resolve(__dirname, './invoice-app/build')));
 
 app.get('/invoices', (req, res) => {
   if (invoices.size) {
@@ -46,6 +49,10 @@ app.post('/email_invoice/:id', (req, res) => {
 
   // format invoice and send using mailgun or nodemailer
   res.sendStatus(204);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './invoice-app/build', 'index.html'));
 });
 
 app.listen(PORT, () => {
